@@ -180,7 +180,7 @@ function startBot() {
       saveConfig();
       ctx.reply('<b>✅ Chat configurata automaticamente!</b>\n\nRiceverai le notizie del Cilento ogni 15 minuti.', { parse_mode: 'HTML' });
     } else {
-      ctx.reply('<b>Bot gia' + "' configurato!</b>\n\nUsa /notizie per vedere le notizie.', { parse_mode: 'HTML' });
+      ctx.reply('<b>Bot già configurato!</b>\n\nUsa /notizie per vedere le notizie.', { parse_mode: 'HTML' });
     }
   });
 
