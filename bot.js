@@ -175,15 +175,13 @@ function startBot() {
   bot = new Telegraf(config.token);
 
   bot.command('start', (ctx) => {
-    ctx.reply(
-      '<b>Benvenuto nel Bot Notizie Cilento! 🇮🇹</b>\n\n' +
-      'Riceverai le ultime notizie dal Cilento direttamente sulla tua chat.\n\n' +
-      '<b>Comandi disponibili:</b>\n' +
-      '• /notizie - Visualizza le ultime notizie\n' +
-      '• /configura - Attiva le notizie automatiche\n\n' +
-      'Il bot controlla ogni 15 minuti e ti invia una notizia alla volta.',
-      { parse_mode: 'HTML' }
-    );
+    if (!config.chatId) {
+      config.chatId = ctx.from.id;
+      saveConfig();
+      ctx.reply('<b>✅ Chat configurata automaticamente!</b>\n\nRiceverai le notizie del Cilento ogni 15 minuti.', { parse_mode: 'HTML' });
+    } else {
+      ctx.reply('<b>Bot gia' + "' configurato!</b>\n\nUsa /notizie per vedere le notizie.', { parse_mode: 'HTML' });
+    }
   });
 
   bot.command('notizie', async (ctx) => {
@@ -210,10 +208,10 @@ function startBot() {
     }
   });
 
-  bot.command('configura', async (ctx) => {
+  bot.command('configura', (ctx) => {
     config.chatId = ctx.from.id;
     saveConfig();
-    ctx.reply('Chat configurata! Riceverai le notizie.');
+    ctx.reply('✅ Chat configurata!', { parse_mode: 'HTML' });
   });
 
   bot.launch();
@@ -232,6 +230,7 @@ if (args[0] === '--set-token') {
 } else {
   cron.schedule('*/15 * * * *', checkAndSend);
   startBot();
+  setTimeout(checkAndSend, 5000);
 }
 
 process.on('SIGINT', () => {
